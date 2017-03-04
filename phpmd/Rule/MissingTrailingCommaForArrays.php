@@ -47,7 +47,11 @@ class MissingTrailingCommaForArrays extends AbstractLocalVariable implements Cla
                     continue;
                 }
 
-                if (!$this->arrayFormattingIsOk($this->getLastCharacterInArray($start, $end, $file, $length))) {
+                $lines = $this->getLinesAsArray($start, $end, $file);
+
+                if ($this->isArray($lines, $length)
+                    && !$this->arrayFormattingIsOk($this->getLastCharacterInArray($lines, $length))
+                ) {
                     $violations[] = $array;
                 }
             }
@@ -78,19 +82,39 @@ class MissingTrailingCommaForArrays extends AbstractLocalVariable implements Cla
      * @param int $start
      * @param int $end
      * @param array $file
-     * @param int $length
-     * @return string
+     * @return array
      */
-    private function getLastCharacterInArray(int $start, int $end, array $file, int $length) : string
+    private function getLinesAsArray(int $start, int $end, array $file) : array
     {
         $range = range($start - 1, $end - 1);
         $lines = array_values(
             array_intersect_key($file, array_flip($range))
         );
-        $trimmedLines = array_map('trim', $lines);
-        $lastEntry = $trimmedLines[$length - 1];
 
-        return mb_substr($lastEntry, -1);
+        return array_map('trim', $lines);
+    }
+
+    /**
+     * @param array $lines
+     * @param int $length
+     * @return bool
+     */
+    private function isArray(array $lines, int $length) : bool
+    {
+        return mb_strpos($lines[$length], '];') !== false;
+    }
+
+    /**
+     * @param array $lines
+     * @param int $length
+     * @return string
+     */
+    private function getLastCharacterInArray(array $lines, int $length) : string
+    {
+        $line = $lines[$length - 1];
+        $line = trim(preg_replace('@(?<!")(?:^|[\t\r\n]|([ ;}\r\n]))(/\*(?:([^*]|\*(?=[^/]))*\*/)|//.*)@','$1', $line));
+
+        return mb_substr($line, -1);
     }
 
     /**
