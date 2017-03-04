@@ -67,4 +67,5 @@
     <rule class="EASIR\PHPMD\Rule\MissingParamType" message="Missing param type in DocBlock." />
     <rule class="EASIR\PHPMD\Rule\MixedParamType" message="Param type is mixed in DocBlock." />
     <rule class="EASIR\PHPMD\Rule\MissingPropertyType" message="Property is missing type." />
+    <rule class="EASIR\PHPMD\Rule\MissingTrailingCommaForArrays" message="Trailing comma is missing at the end of an array." />
 </ruleset>
