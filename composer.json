@@ -1,6 +1,7 @@
 {
     "name": "easir/codestyle-php",
-    "require-dev": {
+    "require": {
+        "php": ">=7",
         "phpmd/phpmd": "^2.6"
     },
     "autoload": {
